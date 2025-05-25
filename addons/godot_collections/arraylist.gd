@@ -39,8 +39,8 @@ func push(value: Variant) -> void:
 	length += 1
 
 func pop() -> Variant:
-	var out = buffer.back()
 	length -= 1
+	var out = buffer[length]
 	buffer[length] = null
 	return out
 
