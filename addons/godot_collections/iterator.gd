@@ -3,6 +3,10 @@ class_name Iterator extends Object
 func next() -> Variant:
 	return null
 
+func reverse() -> ReversedIterator:
+	assert(self is DoubleEndedIterator, "We aren't a double ended iterator")
+	return ReversedIterator.new(self)
+
 func enumerate() -> EnumeratedIterator:
 	return EnumeratedIterator.new(self)
 
@@ -122,6 +126,15 @@ class DictionaryIterator extends Iterator:
 		var out = [keys[index] ,dict[keys[index]]]
 		index += 1
 		return out
+
+class ReversedIterator extends Iterator:
+	var iter: ReversedIterator
+	
+	func _init(iter: ReversedIterator) -> void:
+		self.iter = iter
+	
+	func next() -> Variant:
+		return iter.prev()
 
 class EnumeratedIterator extends Iterator:
 	var iter: Iterator

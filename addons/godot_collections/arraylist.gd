@@ -59,10 +59,15 @@ func capacity() -> int:
 func iter() -> Iterator:
 	return ArrayListIterator.new(self)
 
+func extend(iter: Iterator) -> void:
+	var next_item = iter.next()
+	while next_item != null:
+		push(next_item)
+
 func collect(item: Variant) -> void:
 	push(item)
 
-class ArrayListIterator extends Iterator:
+class ArrayListIterator extends DoubleEndedIterator:
 	var list: ArrayList
 	var index: int = 0
 	func _init(list: ArrayList) -> void:
@@ -74,3 +79,10 @@ class ArrayListIterator extends Iterator:
 		var out = list.at(index)
 		index += 1
 		return out
+	
+	func prev() -> Variant:
+		index -= 1
+		if index <= 0:
+			index = 0
+			return null
+		return list.at(index)
