@@ -11,7 +11,7 @@ static func from_array(array: Array) -> ArrayList:
 	list.length = array.size()
 	return list
 
-static func intitalize(size: int, method: Callable) -> ArrayList:
+static func initialize(size: int, method: Callable) -> ArrayList:
 	var list: ArrayList = ArrayList.new()
 	list.buffer.resize(size)
 	list.length = size

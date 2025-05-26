@@ -7,7 +7,7 @@ func test_from_array():
 	assert_eq_deep(list.buffer, array)
 
 func test_initialize():
-	var list: ArrayList = ArrayList.intitalize(4, func(i):
+	var list: ArrayList = ArrayList.initialize(4, func(i):
 		return i + 1)
 		
 	assert_eq_deep(list.buffer, [1, 2, 3, 4])
