@@ -25,11 +25,12 @@ func foreach(body: Callable) -> void:
 		body.call(next_item)
 		next_item = next()
 
-func collect(collection: Collection) -> void:
+func collect(collection: Collection) -> Collection:
 	var next_item = next()
 	while next_item != null:
 		collection.collect(next_item)
 		next_item = next()
+	return collection
 
 func collect_array() -> Array:
 	var out: Array = []
@@ -96,36 +97,6 @@ func product() -> Variant:
 		product *= next_item
 	
 	return product
-
-class ArrayIterator extends Iterator:
-	var array: Array
-	var index: int = 0
-	
-	func _init(array: Array) -> void:
-		self.array = array
-	
-	func next() -> Variant:
-		if index >= array.size():
-			return null
-		var out = array[index]
-		index += 1
-		return out
-
-class DictionaryIterator extends Iterator:
-	var dict: Dictionary
-	var keys: Array
-	var index: int = 0
-	
-	func _init(dict: Dictionary) -> void:
-		self.dict = dict
-		self.keys = dict.keys()
-	
-	func next() -> Variant:
-		if index >= keys.size():
-			return null
-		var out = [keys[index] ,dict[keys[index]]]
-		index += 1
-		return out
 
 class ReversedIterator extends Iterator:
 	var iter: ReversedIterator

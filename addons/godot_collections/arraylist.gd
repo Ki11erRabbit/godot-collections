@@ -33,6 +33,11 @@ func resize_if_needed(extra_elements: int) -> void:
 func set_resize_factor(factor: float) -> void:
 	resize_factor = factor
 
+func clear() -> void:
+	for i in length:
+		buffer[i] = null
+	length = 0
+
 func push(value: Variant) -> void:
 	resize_if_needed(1)
 	buffer[length] = value
