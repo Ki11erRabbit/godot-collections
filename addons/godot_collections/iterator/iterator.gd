@@ -1,4 +1,4 @@
-class_name Iterator extends Object
+class_name Iterator extends RefCounted
 
 func next() -> Variant:
 	return null

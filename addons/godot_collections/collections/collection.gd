@@ -1,4 +1,4 @@
-class_name Collection extends Object
+class_name Collection extends RefCounted
 
 
 
