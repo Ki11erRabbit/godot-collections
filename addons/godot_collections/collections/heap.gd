@@ -11,15 +11,22 @@ static func shallow_copy(heap: Heap) -> Heap:
 	out_heap.resize_factor = heap.resize_factor
 	return out_heap
 
+static func from_iterator(iter: Iterator) -> Heap:
+	var heap = Heap.new()
+	heap.heapify(iter)
+	return heap
+
 func heapify(iter: Iterator) -> void:
 	var array = iter.collect_array()
 	heap.append_array(array)
 	size = array.size()
+	balance()
 
 func resize() -> void:
-	if size == 0:
-		size = 1
-	var new_size: int = int(ceil(size * resize_factor)) + 1 # Adding 1 to leave space for extra slot that isn't used
+	var resize_size = size
+	if resize_size == 0:
+		resize_size = 1
+	var new_size: int = int(ceil(resize_size * resize_factor)) + 1 # Adding 1 to leave space for extra slot that isn't used
 	heap.resize(new_size)
 
 func resize_if_needed(extra_elements: int) -> void:
@@ -47,7 +54,7 @@ func balance() -> void:
 		push_down(i)
 
 func on_min_level(i: int) -> bool:
-	return floor(log(i) / log(2)) % 2 == 0
+	return int(floor(log(i) / log(2))) % 2 == 0
 
 func push_down(index: int) -> void:
 	if on_min_level(index):
@@ -60,29 +67,31 @@ func push_down_min(index: int) -> void:
 		var pair = get_next_min(index)
 		var min = pair[0]
 		var grandchild = pair[1]
-		if heap[min] < heap[parent(min)]:
-			swap(min, index)
-			if heap[min] > heap[parent(min)]:
-				swap(parent(min), min)
-			push_down(min)
+		if grandchild:
+			if heap[min] < heap[index]:
+				swap(min, index)
+				if heap[min] > heap[parent(min)]:
+					swap(parent(min), min)
+				push_down(min)
 		elif heap[min] < heap[index]:
 			swap(min, index)
 
 func push_down_max(index: int) -> void:
 	if has_children(index):
 		var pair = get_next_min(index)
-		var max = pair[0]
+		var min = pair[0]
 		var grandchild = pair[1]
-		if heap[max] > heap[parent(max)]:
-			swap(max, index)
-			if heap[max] < heap[parent(max)]:
-				swap(parent(max), max)
-			push_down(max)
-		elif heap[max] > heap[index]:
-			swap(max, index)
+		if grandchild:
+			if heap[min] > heap[index]:
+				swap(min, index)
+				if heap[min] < heap[parent(min)]:
+					swap(parent(min), min)
+				push_down(min)
+		elif heap[min] > heap[index]:
+			swap(min, index)
 
 func has_children(index: int) -> bool:
-	return (2 * (index) <= size) or (2 * index + 1 <= size)
+	return (2 * index <= size) or (2 * index + 1 <= size)
 
 func get_grandchildren_indices(index: int) -> Array:
 	var child1_index = 2 * index
@@ -96,7 +105,7 @@ func get_grandchildren_indices(index: int) -> Array:
 
 func get_next_min(index: int) -> Array:
 	var min = heap[(2 * index)]
-	var min_index = 2 * (index + 1)
+	var min_index = 2 * index
 	if 2 * index + 1 < heap.size():
 		var child2 = heap[2 * index + 1]
 		if min > child2:
@@ -116,7 +125,7 @@ func get_next_min(index: int) -> Array:
 
 func get_next_max(index: int) -> Array:
 	var max = heap[(2 * index)]
-	var max_index = 2 * (index + 1)
+	var max_index = 2 * index
 	if 2 * index + 1 < heap.size():
 		var child2 = heap[2 * index + 1]
 		if max < child2:
@@ -192,7 +201,7 @@ func max() -> Variant:
 		index = 2
 	else:
 		index = 3
-	return heap[3]
+	return heap[index]
 
 func pop_min() -> Variant:
 	if size == 0:
@@ -201,6 +210,7 @@ func pop_min() -> Variant:
 	var last = heap[size]
 	heap[1] = last
 	heap[size] = null
+	size -= 1
 	push_down(1)
 	return min
 
@@ -220,6 +230,7 @@ func pop_max() -> Variant:
 	var last = heap[size]
 	heap[index] = last
 	heap[size] = null
+	size -= 1
 	push_down(index)
 	return max
 
